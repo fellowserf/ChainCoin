@@ -355,9 +355,12 @@ public:
 
         UpdateVersionBitsParametersFromArgs(args);
 
-        genesis = CreateGenesisBlock(1296688602, 3, 0x207fffff, 1, 16 * COIN);
+        genesis = CreateGenesisBlock(1296688602, 0, 0x207fffff, 1, 16 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
+        assert(consensus.hashGenesisBlock == uint256S("0x257e7c9daa44d3030c719da42b186a68db305743220923f0d8093dad3daf03c2"));
+        assert(genesis.hashMerkleRoot == uint256S("fa6ef9872494fa9662cf0fecf8c0135a6932e76d7a8764e1155207f3205c7c88"));
 
+        
         vFixedSeeds.clear(); //! Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();  //! Regtest mode doesn't have any DNS seeds.
 
@@ -371,8 +374,8 @@ public:
 
         checkpointData = {
         {
-            { 0, uint256S("000008ca1832a4baf228eb1553c03d3a2c8e02399550dd6ea8d65cec3ef23d2e")},
-    }
+            { 0, uint256S("0x257e7c9daa44d3030c719da42b186a68db305743220923f0d8093dad3daf03c2")},
+        }
         };
 
         chainTxData = ChainTxData{
