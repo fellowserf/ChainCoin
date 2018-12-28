@@ -308,11 +308,15 @@ public:
 };
 
 /**
- * Regression test taken straigt from Chaincoin except port and timing
+ * Regression test taken straight from Chaincoin except port and timing
  */
+
 class CRegTestParams : public CChainParams {
+
 public:
-    CRegTestParams() {
+
+    explicit CRegTestParams(const ArgsManager& args) {
+
         strNetworkID = "regtest";
         consensus.nSubsidyHalvingInterval = 150;
         consensus.nMasternodePaymentsStartBlock = 240;
@@ -326,7 +330,6 @@ public:
         consensus.nMajorityEnforceBlockUpgrade = 750;
         consensus.nMajorityRejectBlockOutdated = 950;
         consensus.nMajorityWindow = 1000;
-        consensus.BIP16Height = 0; // always enforce P2SH BIP16 on regtest
         consensus.BIP34Height = -1; // BIP34 has not necessarily activated on regtest
         consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 1351; // BIP65 activated on regtest (Used in rpc activation tests)
@@ -360,15 +363,19 @@ public:
         pchMessageStart[1] = 0x1f;
         pchMessageStart[2] = 0xc3;
         pchMessageStart[3] = 0x56;
+
         nDefaultPort = 18444;
+
         nPruneAfterHeight = 1000;
+        UpdateVersionBitsParametersFromArgs(args);
 
-        genesis = CreateGenesisBlock(1296688602, 3, 0x207fffff, 1, 16 * COIN);
+        genesis = CreateGenesisBlock(1296688602, 0, 0x207fffff, 1, 16 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-
+        assert(consensus.hashGenesisBlock == uint256S("0x257e7c9daa44d3030c719da42b186a68db305743220923f0d8093dad3daf03c2"));
+        assert(genesis.hashMerkleRoot == uint256S("fa6ef9872494fa9662cf0fecf8c0135a6932e76d7a8764e1155207f3205c7c88"));
+      
         vFixedSeeds.clear(); //! Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();  //! Regtest mode doesn't have any DNS seeds.
-
         fDefaultConsistencyChecks = true;
         fRequireStandard = false;
         fMineBlocksOnDemand = true;
@@ -379,8 +386,9 @@ public:
 
         checkpointData = {
         {
-            { 0, uint256S("000008ca1832a4baf228eb1553c03d3a2c8e02399550dd6ea8d65cec3ef23d2e")},
-    }
+            { 0, uint256S("0x257e7c9daa44d3030c719da42b186a68db305743220923f0d8093dad3daf03c2")},
+        }
+
         };
 
         chainTxData = ChainTxData{
@@ -390,6 +398,7 @@ public:
         };
 
         //Regtest: Bitcoin Parameters
+
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
@@ -397,8 +406,12 @@ public:
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
         bech32_hrp = "chcrt";
+
+        /* enable fallback fee on regtest */
+        m_fallback_fee_enabled = true;
     }
-};
+
+
 
 static std::unique_ptr<CChainParams> globalChainParams;
 
